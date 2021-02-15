@@ -11,7 +11,7 @@ const fullscreen = player.querySelector('.fullscreen');
 
 /* Build out functions */
 function togglePlay() {
-  if(video.paused) {
+  if (video.paused) {
     video.play();
     video.muted = false;
   } else {
@@ -50,13 +50,13 @@ function scrub(e) {
 
 function toggleFullscreen() {
   console.log("Toggling fullscreen");
-  if(video.requestFullScreen){
-		video.requestFullScreen();
-	} else if(video.webkitRequestFullScreen){
-		video.webkitRequestFullScreen();
-	} else if(video.mozRequestFullScreen){
-		video.mozRequestFullScreen();
-	}
+  if (video.requestFullScreen) {
+    video.requestFullScreen();
+  } else if (video.webkitRequestFullScreen) {
+    video.webkitRequestFullScreen();
+  } else if (video.mozRequestFullScreen) {
+    video.mozRequestFullScreen();
+  }
 
 }
 
@@ -101,18 +101,18 @@ recognition.addEventListener('result', e => {
     .map(result => result.transcript)
     .join('')
 
-    p.textContent = transcript;
-    if(e.results[0].isFinal) {
-      p = document.createElement('p');
-      words.appendChild(p);
-    }
-    if(transcript.includes('play video')) {
-      console.log('PLAYING VIDEO');
-      togglePlay();
-    } else if(transcript.includes('skip ahead')) {
-      console.log('SKIPS AHEAD 25SEC');
-      skipForward();
-    }
+  p.textContent = transcript;
+  if (e.results[0].isFinal) {
+    p = document.createElement('p');
+    words.appendChild(p);
+  }
+  if (transcript.includes('play video')) {
+    console.log('PLAYING VIDEO');
+    togglePlay();
+  } else if (transcript.includes('skip ahead')) {
+    console.log('SKIPS AHEAD 25SEC');
+    skipForward();
+  }
 
   console.log(transcript);
 });
@@ -121,3 +121,131 @@ recognition.addEventListener('end', recognition.start);
 
 recognition.start();
 // END OF VOICE CONTROLS //
+
+
+
+
+
+
+
+
+
+
+
+// START OF WEBCAM (pics, red filter, rgb split, greenscreen not live) //
+
+const video = document.querySelector('.player');
+const canvas = document.querySelector('.photo');
+const ctx = canvas.getContext('2d');
+const strip = document.querySelector('.strip');
+const snap = document.querySelector('.snap');
+
+function getVideo() {
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    .then(localMediaStream => {
+      console.log(localMediaStream);
+      // video.src = window.URL.createObjectURL(localMediaStream);
+      //       Please refer to these:
+      //       Deprecated  - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+      //       Newer Syntax - https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
+
+      video.srcObject = localMediaStream;
+      video.play();
+    })
+    .catch(err => {
+      console.error(`Webcam`, err);
+    });
+
+}
+
+function paintToCanvas() {
+  const width = video.videoWidth;
+  const height = video.videoHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  return setInterval(() => {
+    ctx.drawImage(video, 0, 0, width, height)
+    //takes the pixels out
+    let pixels = ctx.getImageData(0, 0, width, height);
+    //messes with the pixels
+
+    // pixels = redEffect(pixels);
+    // pixels = rgbSplit(pixels);
+    // ctx.globalAlpha = 0.1;  //ghosting effect
+
+    // pixels = greenScreen(pixels);
+    // puts pixels back
+    ctx.putImageData(pixels, 0, 0);
+
+  }, 16);
+}
+
+function takePhoto() {
+  // plays sound
+  snap.currentTime = 0;
+  snap.play();
+  // take data out of canvas
+  const data = canvas.toDataURL('image/jpeg');
+  const link = document.createElement('a');
+  link.href = data;
+  link.setAttribute('download', 'photoCapture')
+  link.innerHTML = `<img src= "${data}" alt= "photo" />`;
+  // link.textContent = 'Download Image';
+  strip.insertBefore(link, strip.firstChild);
+
+}
+
+function redEffect(pixels) {
+  for (let i = 0; i < pixels.data.length; i += 4) {
+    pixels.data[i + 0] = pixels.data[i + 0] + 800; //r
+    pixels.data[i + 1] = pixels.data[i + 1] - 50; //g
+    pixels.data[i + 2] = pixels.data[i + 2] * 0.5; //b 
+
+  }
+  return pixels;
+
+}
+
+function rgbSplit(pixels) {
+  for (let i = 0; i < pixels.data.length; i += 4) {
+    pixels.data[i - 150] = pixels.data[i + 0]; //r
+    pixels.data[i + 500] = pixels.data[i + 1]; //g
+    pixels.data[i - 550] = pixels.data[i + 2]; //b 
+
+  }
+  return pixels;
+}
+
+// function greenScreen(pixels) {
+//   const levels = {};
+
+//   document.querySelectorAll('.rgb input').forEach((input) => {
+//     levels[input.name] = input.value;
+//   });
+
+
+//   for (i = 0; i < pixels.data.length; i = i + 4) {
+//     red = pixels.data[i + 0];
+//     green = pixels.data[i + 1];
+//     blue = pixels.data[i + 2];
+//     alpha = pixels.data[i + 3];
+
+//     if (red >= levels.rmin
+//       && green >= levels.gmin
+//       && blue >= levels.bmin
+//       && red <= levels.rmax
+//       && green <= levels.gmax
+//       && blue <= levels.bmax) {
+//       // take it out!
+//       pixels.data[i + 3] = 0;
+//     }
+//   }
+//   return pixels;
+// }
+
+getVideo();
+
+video.addEventListener('canplay', paintToCanvas);
+
+// END OF WEBCAM //
