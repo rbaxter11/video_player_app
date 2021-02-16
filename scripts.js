@@ -8,6 +8,10 @@ const toggle = player.querySelector('.toggle');
 const skipButtons = player.querySelectorAll('[data-skip]');
 const ranges = player.querySelectorAll('.player__slider');
 const fullscreen = player.querySelector('.fullscreen');
+const grayscaleBtn = document.querySelector('.grayscale-btn');
+const sepiaBtn = document.querySelector('.sepia-btn');
+const saturateBtn = document.querySelector('.saturate-btn');
+const blurBtn = document.querySelector('.blur-btn');
 
 /* Build out functions */
 function togglePlay() {
@@ -36,15 +40,26 @@ function skipBackward() {
 }
 function volumeIncrease() {
   video.volume += 0.2;
+  const range = document.querySelector("input[name='volume']");
+  const currentValue = range.value
+  range.value = currentValue + 0.2
 }
 function volumeDecrease() {
   video.volume -= 0.2;
+  const range = document.querySelector("input[name='volume']");
+  const currentValue = range.value
+  range.value = currentValue - 0.2
 }
 function volumeFull() {
   video.volume = 1;
+  // Adjusting range on slider to max
+  const range = document.querySelector("input[name='volume']");
+  range.value = 1
 }
 function volumeMuted() {
   video.volume = 0;
+  const range = document.querySelector("input[name='volume']");
+  range.value = 0
 }
 
 function handleRangeUpdate() {
@@ -75,6 +90,48 @@ function toggleFullscreen() {
   }
 
 }
+function toggleGrayscale() {
+  console.log("Testing grayscale button");
+  video.classList.toggle('grayscale');
+}
+function toggleSepia() {
+  console.log("Testing Sepia button");
+  video.classList.toggle('sepia');
+}
+function toggleSaturate() {
+  console.log("Testing Saturate button");
+  video.classList.toggle('saturate');
+}
+function toggleBlur() {
+  console.log("Testing Blur button");
+  video.classList.toggle('blur');
+}
+function clearAll() {
+  console.log("CLEAR FILTERS");
+  video.classList.remove('grayscale');
+  video.classList.remove('sepia');
+  video.classList.remove('saturate');
+  video.classList.remove('blur');
+}
+var playSelectedFile = function (event) {
+  var file = this.files[0]
+  // var type = file.type
+  // var canPlay = videoNode.canPlayType(type)
+  // if (canPlay === '') canPlay = 'no'
+  // var message = 'Can play type "' + type + '": ' + canPlay
+  // var isError = canPlay === 'no'
+  // displayMessage(message, isError)
+
+  // if (isError) {
+  //   return
+  // }
+  console.log(this.files)
+  var fileURL = URL.createObjectURL(file)
+  console.log(fileURL)
+  video.src = fileURL
+}
+var inputNode = document.querySelector('#myFile')
+inputNode.addEventListener('change', playSelectedFile, false)
 
 
 
@@ -87,11 +144,15 @@ video.addEventListener('pause', updateButton);
 video.addEventListener('timeupdate', handleProgress);
 toggle.addEventListener('click', togglePlay);
 fullscreen.addEventListener('click', toggleFullscreen);
+grayscaleBtn.addEventListener('click', toggleGrayscale);
+sepiaBtn.addEventListener('click', toggleSepia);
+saturateBtn.addEventListener('click', toggleSaturate);
+blurBtn.addEventListener('click', toggleBlur);
 
 skipButtons.forEach(button => button.addEventListener('click', skip));
 
 ranges.forEach(range => range.addEventListener('change', handleRangeUpdate));
-ranges.forEach(range => range.addEventListener('mousemove', handleRangeUpdate));
+// ranges.forEach(range => range.addEventListener('mousemove', handleRangeUpdate));
 
 let mousedown = false;
 progress.addEventListener('click', scrub);
@@ -121,8 +182,8 @@ recognition.addEventListener('result', e => {
 
   p.textContent = transcript;
   if (e.results[0].isFinal) {
-    p = document.createElement('p');
-    words.appendChild(p);
+    // p = document.createElement('p');
+    // words.appendChild(p);
     console.log(transcript);
     // voiceCommands();
     if (transcript.includes('play video') || (transcript.includes('stop video'))) {
@@ -150,6 +211,16 @@ recognition.addEventListener('result', e => {
       console.log('MUTING VIDEO');
       volumeMuted();
       console.log(video.volume);
+    } else if (transcript.includes('make it gray')) {
+      toggleGrayscale();
+    } else if (transcript.includes('make it sepia')) {
+      toggleSepia();
+    } else if (transcript.includes('make it saturated')) {
+      toggleSaturate();
+    } else if (transcript.includes('make it blurry')) {
+      toggleBlur();
+    } else if (transcript.includes('clear')) {
+      clearAll();
     }
   }
 
@@ -172,95 +243,95 @@ recognition.start();
 // END OF VOICE CONTROLS //
 
 // START OF WEBCAM (pics, red filter, rgb split, greenscreen not live) //
-const webvideo = document.querySelector('.player');
-const canvas = document.querySelector('.photo');
-const ctx = canvas.getContext('2d');
-const strip = document.querySelector('.strip');
-const snap = document.querySelector('.snap');
-function getVideo() {
-  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    .then(localMediaStream => {
-      console.log(localMediaStream);
-      // video.src = window.URL.createObjectURL(localMediaStream);
-      //       Please refer to these:
-      //       Deprecated  - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-      //       Newer Syntax - https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
-      webvideo.srcObject = localMediaStream;
-      webvideo.play();
-    })
-    .catch(err => {
-      console.error(`Webcam`, err);
-    });
-}
-function paintToCanvas() {
-  const width = webvideo.videoWidth;
-  const height = webvideo.videoHeight;
-  canvas.width = width;
-  canvas.height = height;
-  return setInterval(() => {
-    ctx.drawImage(video, 0, 0, width, height)
-    //takes the pixels out
-    let pixels = ctx.getImageData(0, 0, width, height);
-    //messes with the pixels
-    // pixels = redEffect(pixels);
-    // pixels = rgbSplit(pixels);
-    // ctx.globalAlpha = 0.1;  //ghosting effect
-    // pixels = greenScreen(pixels);
-    // puts pixels back
-    ctx.putImageData(pixels, 0, 0);
-  }, 16);
-}
-function takePhoto() {
-  // plays sound
-  snap.currentTime = 0;
-  snap.play();
-  // take data out of canvas
-  const data = canvas.toDataURL('image/jpeg');
-  const link = document.createElement('a');
-  link.href = data;
-  link.setAttribute('download', 'photoCapture')
-  link.innerHTML = `<img src= "${data}" alt= "photo" />`;
-  // link.textContent = 'Download Image';
-  strip.insertBefore(link, strip.firstChild);
-}
-function redEffect(pixels) {
-  for (let i = 0; i < pixels.data.length; i += 4) {
-    pixels.data[i + 0] = pixels.data[i + 0] + 800; //r
-    pixels.data[i + 1] = pixels.data[i + 1] - 50; //g
-    pixels.data[i + 2] = pixels.data[i + 2] * 0.5; //b
-  }
-  return pixels;
-}
-function rgbSplit(pixels) {
-  for (let i = 0; i < pixels.data.length; i += 4) {
-    pixels.data[i - 150] = pixels.data[i + 0]; //r
-    pixels.data[i + 500] = pixels.data[i + 1]; //g
-    pixels.data[i - 550] = pixels.data[i + 2]; //b
-  }
-  return pixels;
-}
-// function greenScreen(pixels) {
-//   const levels = {};
-//   document.querySelectorAll('.rgb input').forEach((input) => {
-//     levels[input.name] = input.value;
-//   });
-//   for (i = 0; i < pixels.data.length; i = i + 4) {
-//     red = pixels.data[i + 0];
-//     green = pixels.data[i + 1];
-//     blue = pixels.data[i + 2];
-//     alpha = pixels.data[i + 3];
-//     if (red >= levels.rmin
-//       && green >= levels.gmin
-//       && blue >= levels.bmin
-//       && red <= levels.rmax
-//       && green <= levels.gmax
-//       && blue <= levels.bmax) {
-//       // take it out!
-//       pixels.data[i + 3] = 0;
-//     }
+// const webvideo = document.querySelector('.player');
+// const canvas = document.querySelector('.photo');
+// const ctx = canvas.getContext('2d');
+// const strip = document.querySelector('.strip');
+// const snap = document.querySelector('.snap');
+// function getVideo() {
+//   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+//     .then(localMediaStream => {
+//       console.log(localMediaStream);
+//       // video.src = window.URL.createObjectURL(localMediaStream);
+//       //       Please refer to these:
+//       //       Deprecated  - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+//       //       Newer Syntax - https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
+//       webvideo.srcObject = localMediaStream;
+//       webvideo.play();
+//     })
+//     .catch(err => {
+//       console.error(`Webcam`, err);
+//     });
+// }
+// function paintToCanvas() {
+//   const width = webvideo.videoWidth;
+//   const height = webvideo.videoHeight;
+//   canvas.width = width;
+//   canvas.height = height;
+//   return setInterval(() => {
+//     ctx.drawImage(video, 0, 0, width, height)
+//     //takes the pixels out
+//     let pixels = ctx.getImageData(0, 0, width, height);
+//     //messes with the pixels
+//     // pixels = redEffect(pixels);
+//     // pixels = rgbSplit(pixels);
+//     // ctx.globalAlpha = 0.1;  //ghosting effect
+//     // pixels = greenScreen(pixels);
+//     // puts pixels back
+//     ctx.putImageData(pixels, 0, 0);
+//   }, 100);
+// }
+// function takePhoto() {
+//   // plays sound
+//   snap.currentTime = 0;
+//   snap.play();
+//   // take data out of canvas
+//   const data = canvas.toDataURL('image/jpeg');
+//   const link = document.createElement('a');
+//   link.href = data;
+//   link.setAttribute('download', 'photoCapture')
+//   link.innerHTML = `<img src= "${data}" alt= "photo" />`;
+//   // link.textContent = 'Download Image';
+//   strip.insertBefore(link, strip.firstChild);
+// }
+// function redEffect(pixels) {
+//   for (let i = 0; i < pixels.data.length; i += 4) {
+//     pixels.data[i + 0] = pixels.data[i + 0] + 800; //r
+//     pixels.data[i + 1] = pixels.data[i + 1] - 50; //g
+//     pixels.data[i + 2] = pixels.data[i + 2] * 0.5; //b
 //   }
 //   return pixels;
 // }
-getVideo();
-webvideo.addEventListener('canplay', paintToCanvas);
-// END OF WEBCAM //
+// function rgbSplit(pixels) {
+//   for (let i = 0; i < pixels.data.length; i += 4) {
+//     pixels.data[i - 150] = pixels.data[i + 0]; //r
+//     pixels.data[i + 500] = pixels.data[i + 1]; //g
+//     pixels.data[i - 550] = pixels.data[i + 2]; //b
+//   }
+//   return pixels;
+// }
+// // function greenScreen(pixels) {
+// //   const levels = {};
+// //   document.querySelectorAll('.rgb input').forEach((input) => {
+// //     levels[input.name] = input.value;
+// //   });
+// //   for (i = 0; i < pixels.data.length; i = i + 4) {
+// //     red = pixels.data[i + 0];
+// //     green = pixels.data[i + 1];
+// //     blue = pixels.data[i + 2];
+// //     alpha = pixels.data[i + 3];
+// //     if (red >= levels.rmin
+// //       && green >= levels.gmin
+// //       && blue >= levels.bmin
+// //       && red <= levels.rmax
+// //       && green <= levels.gmax
+// //       && blue <= levels.bmax) {
+// //       // take it out!
+// //       pixels.data[i + 3] = 0;
+// //     }
+// //   }
+// //   return pixels;
+// // }
+// getVideo();
+// webvideo.addEventListener('canplay', paintToCanvas);
+// // END OF WEBCAM //

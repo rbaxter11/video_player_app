@@ -122,3 +122,16 @@ p {
   border: 1px solid;
   border-color: transparent #efe4e4;
 }
+
+.grayscale {
+filter:grayscale(100%)
+}
+.sepia {
+filter:sepia(100%)
+}
+.saturate {
+filter:saturate(800%)
+}
+.blur {
+filter:blur(5px)
+}
