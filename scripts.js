@@ -11,7 +11,7 @@ const fullscreen = player.querySelector('.fullscreen');
 
 /* Build out functions */
 function togglePlay() {
-  if(video.paused) {
+  if (video.paused) {
     video.play();
     video.muted = false;
   } else {
@@ -23,7 +23,6 @@ function updateButton() {
   // this.pause - this is bound to the video itself
   const icon = this.paused ? '►' : '❚ ❚';
   toggle.textContent = icon;
-  console.log('Does this work?')
 }
 
 function skip() {
@@ -32,9 +31,26 @@ function skip() {
 function skipForward() {
   video.currentTime += 25;
 }
+function skipBackward() {
+  video.currentTime -= 10;
+}
+function volumeIncrease() {
+  video.volume += 0.2;
+}
+function volumeDecrease() {
+  video.volume -= 0.2;
+}
+function volumeFull() {
+  video.volume = 1;
+}
+function volumeMuted() {
+  video.volume = 0;
+}
 
 function handleRangeUpdate() {
   video[this.name] = this.value;
+  console.log(this.name);
+  console.log(this.value);
 }
 
 function handleProgress() {
@@ -50,15 +66,17 @@ function scrub(e) {
 
 function toggleFullscreen() {
   console.log("Toggling fullscreen");
-  if(video.requestFullScreen){
-		video.requestFullScreen();
-	} else if(video.webkitRequestFullScreen){
-		video.webkitRequestFullScreen();
-	} else if(video.mozRequestFullScreen){
-		video.mozRequestFullScreen();
-	}
+  if (video.requestFullScreen) {
+    video.requestFullScreen();
+  } else if (video.webkitRequestFullScreen) {
+    video.webkitRequestFullScreen();
+  } else if (video.mozRequestFullScreen) {
+    video.mozRequestFullScreen();
+  }
 
 }
+
+
 
 
 
@@ -101,23 +119,54 @@ recognition.addEventListener('result', e => {
     .map(result => result.transcript)
     .join('')
 
-    p.textContent = transcript;
-    if(e.results[0].isFinal) {
-      p = document.createElement('p');
-      words.appendChild(p);
-    }
-    if(transcript.includes('play video')) {
+  p.textContent = transcript;
+  if (e.results[0].isFinal) {
+    p = document.createElement('p');
+    words.appendChild(p);
+    console.log(transcript);
+    // voiceCommands();
+    if (transcript.includes('play video') || (transcript.includes('stop video'))) {
       console.log('PLAYING VIDEO');
       togglePlay();
-    } else if(transcript.includes('skip ahead')) {
+    } else if (transcript.includes('skip ahead')) {
       console.log('SKIPS AHEAD 25SEC');
       skipForward();
+    } else if (transcript.includes('skip back')) {
+      console.log('SKIPS BACK 10SEC');
+      skipBackward();
+    } else if (transcript.includes('turn it up')) {
+      console.log('INCREASING VOLUME');
+      volumeIncrease();
+      console.log(video.volume);
+    } else if (transcript.includes('turn it down')) {
+      console.log('DECREASING VOLUME');
+      volumeDecrease();
+      console.log(video.volume);
+    } else if (transcript.includes('max volume')) {
+      console.log('MAX VOLUME');
+      volumeFull();
+      console.log(video.volume);
+    } else if (transcript.includes('mute')) {
+      console.log('MUTING VIDEO');
+      volumeMuted();
+      console.log(video.volume);
     }
+  }
 
-  console.log(transcript);
 });
+
+// function voiceCommands(transcript) {
+//   if (transcript.includes('play video')) {
+//     console.log('PLAYING VIDEO');
+//     togglePlay();
+//   } else if (transcript.includes('skip ahead')) {
+//     console.log('SKIPS AHEAD 25SEC');
+//     skipForward();
+//   }
+// }
 
 recognition.addEventListener('end', recognition.start);
 
 recognition.start();
+
 // END OF VOICE CONTROLS //
