@@ -135,3 +135,88 @@ filter:saturate(800%)
 .blur {
 filter:blur(5px)
 }
+
+.grayscale-btn {
+  color: white;
+  padding: 10px 24px;
+  width: 100px;
+  background: rgba(26, 24, 25, 0.719);
+  border-radius: 50px;
+  border: 2px solid #ffffff;
+  transition-duration: 0.5s;
+
+  
+}
+.grayscale-btn:hover {
+  background-color: #a3a3a0f8;
+  color: white;
+}
+
+.sepia-btn {
+  color: white;
+  padding: 10px 24px;
+  width: 100px;
+  background: rgba(26, 24, 25, 0.719);
+  border-radius: 50px;
+  border: 2px solid #ffffff;
+  transition-duration: 0.5s;
+
+  
+}
+.sepia-btn:hover {
+  background-color: #7c7c23f8;
+  color: rgb(255, 255, 255);
+}
+
+.saturate-btn {
+  color: white;
+  padding: 10px 24px;
+  width: 150px;
+  background: rgba(26, 24, 25, 0.719);
+  border-radius: 50px;
+  border: 2px solid #ffffff;
+  transition-duration: 0.5s;
+
+  
+}
+.saturate-btn:hover {
+  background-color: #d84bf5f8;
+  color: white;
+}
+
+.blur-btn {
+  color: white;
+  padding: 10px 24px;
+  width: 100px;
+  background: rgba(26, 24, 25, 0.719);
+  border-radius: 50px;
+  border: 2px solid #ffffff;
+  transition-duration: 0.5s;
+
+  
+}
+.blur-btn:hover {
+  background-color: #a3a3a0f8;
+  color: white;
+  filter: blur(4px);
+}
+
+.clear-btn {
+  color: white;
+  padding: 10px 24px;
+  width: 100px;
+  background: rgba(109, 44, 44, 0.719);
+  border-radius: 50px;
+  border: 2px solid #ffffff;
+  transition-duration: 0.5s;
+
+}
+
+.clear-btn:hover {
+  background-color: #ff0000f8;
+  color: white;
+  
+}
+
+
+
