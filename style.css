@@ -149,7 +149,7 @@ filter:blur(5px)
 .buttonGroup {
   display: flex;
   justify-content: center;
-  padding: 1rem;
+
 }
 
 @media (max-width: 560px) {
@@ -160,7 +160,7 @@ filter:blur(5px)
 }
 
 .grayscale-btn {
-  margin: 0rem 1rem;
+  margin: 4px;
   color: white;
   padding: 10px 24px;
   width: 100px;
@@ -177,7 +177,7 @@ filter:blur(5px)
 }
 
 .sepia-btn {
-  margin: 0rem 1rem;
+  margin: 4px;
   color: white;
   padding: 10px 24px;
   width: 100px;
@@ -194,7 +194,7 @@ filter:blur(5px)
 }
 
 .saturate-btn {
-  margin: 0rem 1rem;
+  margin: 4px;
   color: white;
   padding: 10px 24px;
   width: 150px;
@@ -211,7 +211,7 @@ filter:blur(5px)
 }
 
 .blur-btn {
-  margin: 0rem 1rem;
+  margin: 4px;
   color: white;
   padding: 10px 24px;
   width: 100px;
@@ -229,7 +229,7 @@ filter:blur(5px)
 }
 
 .clear-btn {
-  margin: 0rem 1rem;
+  margin: 4px;
   color: white;
   padding: 10px 24px;
   width: 100px;
