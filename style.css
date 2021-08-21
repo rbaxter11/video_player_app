@@ -163,14 +163,14 @@ filter:blur(5px)
 }
 
 .grayscale-btn {
-  margin: 4px;
+  padding: 4px 0;
   color: white;
-  padding: 10px 24px;
   width: 100px;
   background: rgba(26, 24, 25, 0.719);
   border-radius: 50px;
   border: 2px solid #ffffff;
   transition-duration: 0.5s;
+
 
   
 }
@@ -180,9 +180,8 @@ filter:blur(5px)
 }
 
 .sepia-btn {
-  margin: 4px;
+  margin-left: 4px;
   color: white;
-  padding: 10px 24px;
   width: 100px;
   background: rgba(26, 24, 25, 0.719);
   border-radius: 50px;
@@ -197,9 +196,8 @@ filter:blur(5px)
 }
 
 .saturate-btn {
-  margin: 4px;
+  margin: 0 4px;
   color: white;
-  padding: 10px 24px;
   width: 150px;
   background: rgba(26, 24, 25, 0.719);
   border-radius: 50px;
@@ -214,9 +212,8 @@ filter:blur(5px)
 }
 
 .blur-btn {
-  margin: 4px;
+  margin-right: 4px;
   color: white;
-  padding: 10px 24px;
   width: 100px;
   background: rgba(26, 24, 25, 0.719);
   border-radius: 50px;
@@ -232,9 +229,7 @@ filter:blur(5px)
 }
 
 .clear-btn {
-  margin: 4px;
   color: white;
-  padding: 10px 24px;
   width: 100px;
   background: rgba(109, 44, 44, 0.719);
   border-radius: 50px;
