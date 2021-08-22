@@ -1,14 +1,23 @@
 {
-  "name": "gum",
+  "name": "video_player_app",
   "version": "1.0.0",
   "description": "",
   "main": "scripts.js",
   "scripts": {
-    "start": "browser-sync start --directory --server --files \"*.css, *.html, *.js\""
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rbaxter11/video_player_app.git"
+  },
+  "author": "\"Shane and Ryan\"",
   "license": "ISC",
-  "devDependencies": {
-    "browser-sync": "^2.26.14"
+  "bugs": {
+    "url": "https://github.com/rbaxter11/video_player_app/issues"
+  },
+  "homepage": "https://github.com/rbaxter11/video_player_app#readme",
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
